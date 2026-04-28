@@ -3,21 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEBULA OPTI — Next Gen Optimization</title>
+    <title>NEBULA OPTI — Ultimate Performance</title>
+    <link href="https://googleapis.com" rel="stylesheet">
     <style>
         :root {
             --primary: #00a3ff;
-            --bg: #050508;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border: rgba(0, 163, 255, 0.2);
+            --primary-glow: rgba(0, 163, 255, 0.6);
+            --bg: #030508;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --border: rgba(0, 163, 255, 0.15);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, border 0.3s, transform 0.3s; }
+        /* КАСТОМНЫЙ СКРОЛЛБАР */
+        ::-webkit-scrollbar { width: 14px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary); background-clip: padding-box;
+            border: 4px solid transparent; border-radius: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 163, 255, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
 
         body {
             background-color: var(--bg);
             color: white;
-            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -25,328 +36,315 @@
             overflow-x: hidden;
         }
 
-        /* Интерактивное свечение */
-        #cursor-glow {
-            position: fixed;
-            top: 0; left: 0;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(0, 163, 255, 0.12) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            will-change: transform;
+        /* ТУМАННОСТИ */
+        .nebula-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; pointer-events: none; }
+        .cloud {
+            position: absolute; width: 80vw; height: 80vw;
+            background: radial-gradient(circle, rgba(0, 163, 255, 0.04) 0%, transparent 70%);
+            filter: blur(100px);
+            animation: moveClouds 25s infinite alternate ease-in-out;
         }
+        @keyframes moveClouds { from { transform: translate(-10%, -10%); } to { transform: translate(10%, 10%); } }
 
-        /* Холст для частиц */
-        #particles-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -2;
-            pointer-events: none;
-        }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
+        #cursor-glow { position: fixed; top: 0; left: 0; width: 700px; height: 700px; background: radial-gradient(circle, rgba(0, 163, 255, 0.07) 0%, transparent 70%); border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); z-index: -1; }
 
-        .container {
-            width: 100%;
-            max-width: 1100px;
-            padding: 60px 20px;
-            text-align: center;
-            flex-grow: 1;
-        }
+        .container { width: 100%; max-width: 1100px; padding: 120px 20px 100px; text-align: center; flex-grow: 1; }
 
+        .glow-text { color: var(--primary) !important; text-shadow: 0 0 15px var(--primary-glow), 0 0 35px rgba(0, 163, 255, 0.2); }
+
+        /* МЕНЮ */
         nav {
-            margin-bottom: 60px;
-            display: flex; gap: 30px;
-            justify-content: center;
+            margin: 20px auto;
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; max-width: 1000px;
+            background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08); padding: 10px 20px; border-radius: 24px;
+            position: sticky; top: 20px; z-index: 100;
         }
+        .nav-logo { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .logo-box { background: var(--primary); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--primary-glow); font-weight: 900; }
+        .nav-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.05); }
+        .nav-item { color: #94a3b8; font-size: 13px; font-weight: 600; padding: 8px 20px; border-radius: 14px; cursor: pointer; transition: 0.3s ease; }
+        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 0 20px var(--primary-glow); }
+        .btn-discord-nav { background: #5865F2; color: white; text-decoration: none; padding: 10px 25px; border-radius: 12px; font-weight: 700; font-size: 13px; transition: 0.3s; }
 
-        .nav-link {
-            color: #94a3b8;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 13px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            font-weight: 600;
-            padding-bottom: 5px;
-            border-bottom: 2px solid transparent;
-        }
-
-        .nav-link.active { color: var(--primary); border-color: var(--primary); }
-
-        .page { display: none; animation: fadeIn 0.5s ease forwards; }
+        /* КОНТЕНТ */
+        .page { display: none; animation: fadeIn 0.8s ease forwards; }
         .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        h1 { font-size: clamp(45px, 10vw, 95px); font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 30px; letter-spacing: -3px; }
 
-        .badge {
-            display: inline-block;
-            border: 1px solid var(--border);
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
+        .btn-main { display: inline-block; text-decoration: none; padding: 22px 60px; border-radius: 15px; font-weight: 800; background: var(--primary); color: white; text-transform: uppercase; cursor: pointer; border: none; margin: 20px; transition: 0.4s; box-shadow: 0 5px 25px rgba(0, 163, 255, 0.2); }
+        .btn-main:hover { transform: translateY(-4px); box-shadow: 0 15px 40px var(--primary-glow); }
 
-        h1 { font-size: clamp(32px, 7vw, 70px); font-weight: 900; margin-bottom: 20px; text-transform: uppercase; line-height: 1.1; }
-        h1 span { color: var(--primary); text-shadow: 0 0 30px rgba(0,163,255,0.4); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 80px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 30px; padding: 60px 45px; text-align: left; backdrop-filter: blur(10px); transition: 0.5s; }
+        .card:hover { border-color: var(--primary); transform: translateY(-10px); }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: left;
-            backdrop-filter: blur(10px);
-            position: relative;
-        }
-
-        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
-
-        .price { font-size: 32px; font-weight: 900; margin: 20px 0; color: var(--primary); }
-        .features { list-style: none; color: #94a3b8; line-height: 2.2; margin-bottom: 30px; }
-        .features li::before { content: "● "; color: var(--primary); margin-right: 8px; font-size: 12px; }
-
-        footer { width: 100%; max-width: 1100px; padding: 100px 20px 60px; text-align: center; }
-
+        footer { width: 100%; max-width: 1000px; padding: 150px 20px 80px; margin: auto auto 0; }
         .discord-card {
-            background: linear-gradient(145deg, rgba(88, 101, 242, 0.1), rgba(0, 163, 255, 0.05));
-            border: 1px solid rgba(88, 101, 242, 0.3);
-            border-radius: 24px;
-            padding: 40px;
-            display: flex; flex-direction: column;
-            align-items: center; gap: 15px;
-            text-decoration: none;
+            background: rgba(255, 255, 255, 0.015); backdrop-filter: blur(30px); border: 1px solid var(--border);
+            border-radius: 40px; padding: 80px 40px; display: flex; flex-direction: column; align-items: center; gap: 30px;
+            text-decoration: none; transition: 0.6s;
         }
-
-        .discord-btn {
-            background: #5865F2;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .btn {
-            display: inline-block;
-            text-decoration: none;
-            padding: 20px 40px;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            border: none;
-            background: var(--primary);
-            color: white;
-            width: 100%;
-            text-align: center;
-        }
-
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: white; width: auto; }
     </style>
 </head>
 <body>
 
+<div class="nebula-bg">
+    <div class="cloud" style="top: -10%; left: -10%;"></div>
+    <div class="cloud" style="bottom: -10%; right: -10%; animation-delay: -5s;"></div>
+</div>
 <canvas id="particles-canvas"></canvas>
 <div id="cursor-glow"></div>
 
-<div class="container">
-    <nav>
-        <div class="nav-link active" onclick="showPage('main')">Главная</div>
-        <div class="nav-link" onclick="showPage('order')">Настройка</div>
-        <div class="nav-link" onclick="showPage('results')">Результаты</div>
-    </nav>
+<nav style="
+    margin: 20px auto 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1000px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px 25px; /* Чуть увеличили общие отступы меню */
+    border-radius: 24px;
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+">
+    <style>
+        .nav-item {
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 18px; /* Уменьшили высоту кнопки (было 8px) */
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+        .nav-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.05);
+        }
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+    </style>
 
-    <div id="main" class="page active">
-        <div class="badge">● NEBULA OPTI ●</div>
-        <h1>Ultimate <span>FPS</span> Boost</h1>
-        <p style="color: #94a3b8; font-size: 18px; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
-            Сделаем твой геймплей в Rust идеально плавным. Забудь про статтеры во время зажима и долгую загрузку на сервер.
-        </p>
-        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-            <button class="btn btn-outline" style="background: var(--primary); border: none;" onclick="showPage('order')">Заказать ⚡</button>
-            <button class="btn btn-outline" onclick="showPage('results')">Кейсы →</button>
+    <!-- Логотип -->
+    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+        <div style="background: var(--primary); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--primary-glow); font-weight: 900;">
+            <span style="color: white; font-size: 16px;">N</span>
         </div>
+        <span style="font-weight: 800; text-transform: uppercase; font-size: 15px; color: white;">Nebula <span class="glow-text">Opti</span></span>
     </div>
 
-    <div id="order" class="page">
-        <div class="badge">Price list</div>
-        <h1>Выберите <span>Тариф</span></h1>
-        <div class="grid">
-            <div class="card">
-                <h3>BASIC</h3>
-                <div class="price">200 ₽</div>
-                <ul class="features">
-                    <li>Оптимизация Windows 10/11</li>
-                    <li>Настройка параметров Rust</li>
-                    <li>Очистка кэша и мусора</li>
-                    <li>Базовая настройка драйверов</li>
-                </ul>
-                <a href="https://discord.gg/2F4gjM4UcT" target="_blank" class="btn">Купить</a>
-            </div>
-            <div class="card" style="border-color: var(--primary);">
-                <div style="position: absolute; top: 15px; right: 20px; color: var(--primary); font-size: 10px; font-weight: 900; letter-spacing: 2px;">TOP SELLER</div>
-                <h3>ADVANCED</h3>
-                <div class="price">350 ₽</div>
-                <ul class="features">
-                    <li>Все из пакета BASIC</li>
-                    <li>Максимальный приоритет системы</li>
-                    <li>Оптимизация Input Lag</li>
-                    <li>Настройка сети и RAM</li>
-                </ul>
-                <a href="https://discord.gg/2F4gjM4UcT" target="_blank" class="btn">Купить</a>
-            </div>
-        </div>
-    </div>
-
-    <div id="results" class="page">
-        <div class="badge">Cases</div>
-        <h1>Наши <span>Достижения</span></h1>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-            <div class="card" style="text-align: center;">
-                <div style="font-size: 48px; font-weight: 900; color: var(--primary);">+30%</div>
-                <div style="font-size: 13px; color: #64748b; text-transform: uppercase;">Прирост кадров</div>
-            </div>
-            <div class="card" style="text-align: center;">
-                <div style="font-size: 48px; font-weight: 900; color: var(--primary);">-20ms</div>
-                <div style="font-size: 13px; color: #64748b; text-transform: uppercase;">Input Lag</div>
-            </div>
-            <div class="card" style="text-align: center;">
-                <div style="font-size: 48px; font-weight: 900; color: var(--primary);">99%</div>
-                <div style="font-size: 13px; color: #64748b; text-transform: uppercase;">Стабильность</div>
-            </div>
-        </div>
-    </div>
-
-    <footer style="margin-top: 50px;">
-        <a href="https://discord.gg/2F4gjM4UcT" target="_blank" class="discord-card" style="
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(0, 163, 255, 0.2);
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 163, 255, 0.05);
-        border-radius: 30px;
-        padding: 60px 40px;
+    <!-- Центральное меню (Исправленные отступы) -->
+    <div style="
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 25px;
-        text-decoration: none;
-        transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
+        gap: 4px;
+        background: rgba(0, 0, 0, 0.4);
+        padding: 6px; /* Добавили больше места внутри черной рамки */
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
     ">
-            <!-- Декоративное свечение внутри -->
-            <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0, 163, 255, 0.05) 0%, transparent 50%); pointer-events: none;"></div>
+        <div id="nav-main" class="nav-item active" onclick="showPage('main')">Главная</div>
+        <div id="nav-order" class="nav-item" onclick="showPage('order')">Услуги</div>
+        <div id="nav-results" class="nav-item" onclick="showPage('results')">Кейсы</div>
+    </div>
 
-            <svg viewBox="0 0 127.14 96.36" style="width: 70px; fill: #5865F2; filter: drop-shadow(0 0 15px rgba(88, 101, 242, 0.5));">
-                <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.71,32.65-1.82,56.6.48,80.21a105.73,105.73,0,0,0,32.21,16.15c2.45-3.32,4.58-6.84,6.38-10.53a67.46,67.46,0,0,1-10.25-4.85c.86-.62,1.7-1.28,2.51-1.97a74.62,74.62,0,0,0,64,0c.81.69,1.65,1.35,2.51,1.97a67.31,67.31,0,0,1-10.25,4.85c1.8,3.69,3.93,7.21,6.38,10.53a105.6,105.6,0,0,0,32.21-16.15C129.58,50.46,125.17,26.83,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5.07-12.73,11.41-12.73S54,46,53.86,53,48.79,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5.07-12.73,11.44-12.73S96.23,46,96.09,53,91,65.69,84.69,65.69Z"/>
-            </svg>
-
-            <div style="text-align: center;">
-                <h3 style="font-size: 32px; font-weight: 900; color: white; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">Нужна помощь?</h3>
-                <p style="color: #94a3b8; font-size: 16px; max-width: 400px; line-height: 1.5;">Оформляй заказ, читай отзывы и общайся с комьюнити в нашем Discord</p>
-            </div>
-
-            <div class="discord-btn" style="
+    <!-- Правая часть -->
+    <div style="display: flex; justify-content: flex-end; flex: 1;">
+        <a href="https://discord.gg" target="_blank" style="
             background: #5865F2;
             color: white;
-            padding: 20px 50px;
+            text-decoration: none;
+            padding: 9px 22px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            transition: 0.3s;
+        " onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='#4752c4'" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='#5865F2'">
+            Войти
+        </a>
+    </div>
+</nav>
+
+
+
+<div class="container">
+    <!-- ГЛАВНАЯ -->
+    <div id="main" class="page active">
+        <h1>Ultimate <span class="glow-text">FPS</span> Boost</h1>
+        <p style="color: #94a3b8; font-size: 22px; max-width: 700px; margin: 0 auto 50px; line-height: 1.6;">Забудь про статтеры и задержки. Мы превратим твой ПК в машину для побед в Rust.</p>
+        <button class="btn-main" onclick="showPage('order')">Начать настройку ⚡</button>
+    </div>
+
+    <!-- УСЛУГИ -->
+    <div id="order" class="page">
+        <h1>Выберите <span class="glow-text">Тариф</span></h1>
+        <div class="grid">
+            <div class="card">
+                <h3 style="font-size: 24px; letter-spacing: 2px;">BASIC</h3>
+                <div style="font-size: 44px; font-weight: 900; margin: 25px 0;" class="glow-text">200 ₽</div>
+                <ul style="list-style: none; color: #94a3b8; line-height: 2.8; font-size: 16px;">
+                    <li>● Оптимизация Windows 10/11</li>
+                    <li>● Тюнинг параметров Rust</li>
+                    <li>● Глубокая очистка системы</li>
+                </ul>
+                <a href="https://discord.gg" target="_blank" class="btn-main" style="width: 100%; text-align: center; margin-top: 40px;">Купить</a>
+            </div>
+            <div class="card" style="border-color: var(--primary);">
+                <h3 style="font-size: 24px; letter-spacing: 2px;">ADVANCED</h3>
+                <div style="font-size: 44px; font-weight: 900; margin: 25px 0;" class="glow-text">350 ₽</div>
+                <ul style="list-style: none; color: #94a3b8; line-height: 2.8; font-size: 16px;">
+                    <li>● Все из пакета BASIC</li>
+                    <li>● Максимальный приоритет</li>
+                    <li>● Оптимизация задержки</li>
+                </ul>
+                <a href="https://discord.gg" target="_blank" class="btn-main" style="width: 100%; text-align: center; margin-top: 40px;">Купить</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- КЕЙСЫ -->
+    <div id="results" class="page">
+        <h1>Наши <span class="glow-text">Кейсы</span></h1>
+        <div class="grid">
+            <div class="card" style="text-align: center;"><div style="font-size: 60px; font-weight: 900;" class="glow-text">+45%</div><div style="color: #64748b; letter-spacing: 3px;">FPS BOOST</div></div>
+            <div class="card" style="text-align: center;"><div style="font-size: 60px; font-weight: 900;" class="glow-text">-20ms</div><div style="color: #64748b; letter-spacing: 3px;">INPUT LAG</div></div>
+            <div class="card" style="text-align: center;"><div style="font-size: 60px; font-weight: 900;" class="glow-text">99%</div><div style="color: #64748b; letter-spacing: 3px;">STABILITY</div></div>
+        </div>
+    </div>
+</div>
+
+<footer style="width: 100%; max-width: 1000px; padding: 150px 20px 80px; margin: 0 auto; display: flex; justify-content: center;">
+    <a href="https://discord.gg" target="_blank" class="discord-card" style="
+        background: rgba(255, 255, 255, 0.015);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border: 1px solid var(--border);
+        border-radius: 40px;
+        padding: 80px 20px; /* Уменьшил боковые отступы для точности */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Строгое выравнивание по центру */
+        justify-content: center;
+        text-align: center; /* Центрирование текста внутри строк */
+        gap: 35px;
+        text-decoration: none;
+        transition: 0.6s;
+        width: 100%; /* Занимает всю ширину контейнера */
+    ">
+        <!-- Иконка Discord -->
+        <svg style="width: 80px; height: auto; fill: var(--primary); filter: drop-shadow(0 0 20px var(--primary-glow)); display: block;" viewBox="0 0 127.14 96.36">
+            <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.71,32.65-1.82,56.6.48,80.21a105.73,105.73,0,0,0,32.21,16.15c2.45-3.32,4.58-6.84,6.38-10.53a67.46,67.46,0,0,1-10.25-4.85c.86-.62,1.7-1.28,2.51-1.97a74.62,74.62,0,0,0,64,0c.81.69,1.65,1.35,2.51,1.97a67.31,67.31,0,0,1-10.25,4.85c1.8,3.69,3.93,7.21,6.38,10.53a105.6,105.6,0,0,0,32.21-16.15C129.58,50.46,125.17,26.83,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5.07-12.73,11.41-12.73S54,46,53.86,53,48.79,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5.07-12.73,11.44-12.73S96.23,46,96.09,53,91,65.69,84.69,65.69Z"/>
+        </svg>
+
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%;">
+            <h3 class="glow-text" style="font-size: 32px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin: 0; width: 100%;">Готов бустануть свой ПК?</h3>
+            <p style="color: #94a3b8; font-size: 18px; max-width: 550px; line-height: 1.6; margin: 0;">Если тебя устраивают результаты и ты хочешь такую же плавность в игре — заходи в наш Discord. Мы сделаем всё остальное.</p>
+        </div>
+
+        <div style="
+            background: #5865F2;
+            color: white;
+            padding: 18px 50px;
             border-radius: 15px;
             font-weight: 800;
             text-transform: uppercase;
-            font-size: 16px;
             letter-spacing: 1px;
-            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+            box-shadow: 0 10px 30px rgba(88,101,242,0.3);
+            transition: 0.3s;
             display: flex;
             align-items: center;
-            gap: 10px;
-        ">
-                Вступить в Nebula Opti ⚡
-            </div>
-        </a>
-        <p style="margin-top: 50px; color: #333; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">© 2026 NEBULA OPTI • Powered by Pro-Grade Optimizers</p>
-    </footer>
-</div>
+            justify-content: center;
+        " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 40px rgba(88,101,242,0.5)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 10px 30px rgba(88,101,242,0.3)'">
+            Вступить в Nebula Opti ⚡
+        </div>
+    </a>
+</footer>
+
+
 
 <script>
-    // Движение свечения
     const glow = document.getElementById('cursor-glow');
+    const mouse = { x: -1000, y: -1000 };
     document.addEventListener('mousemove', (e) => {
-        glow.style.left = e.clientX + 'px';
-        glow.style.top = e.clientY + 'px';
+        mouse.x = e.clientX; mouse.y = e.clientY;
+        glow.style.left = mouse.x + 'px'; glow.style.top = mouse.y + 'px';
     });
 
-    // Частицы на фоне
     const canvas = document.getElementById('particles-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize);
     resize();
 
     class Particle {
-        constructor() {
+        constructor(interactive) { this.interactive = interactive; this.init(); }
+        init() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2;
-            this.speedX = Math.random() * 0.5 - 0.25;
-            this.speedY = Math.random() * 0.5 - 0.25;
-            this.opacity = Math.random();
+            this.size = Math.random() * 1.5 + 0.5;
+            this.speedX = Math.random() * 0.4 - 0.2;
+            this.speedY = Math.random() * 0.4 - 0.2;
+            this.opacity = Math.random() * 0.4 + 0.1;
         }
         update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x > canvas.width) this.x = 0;
-            if (this.x < 0) this.x = canvas.width;
-            if (this.y > canvas.height) this.y = 0;
-            if (this.y < 0) this.y = canvas.height;
+            this.x += this.speedX; this.y += this.speedY;
+            if (this.interactive) {
+                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 150) { this.x += dx * 0.01; this.y += dy * 0.01; }
+            }
+            if (this.x > canvas.width || this.x < 0 || this.y > canvas.height || this.y < 0) this.init();
         }
         draw() {
             ctx.fillStyle = `rgba(0, 163, 255, ${this.opacity})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
         }
     }
 
-    function init() {
-        for (let i = 0; i < 80; i++) particles.push(new Particle());
-    }
+    for (let i = 0; i < 80; i++) particles.push(new Particle(false));
+    for (let i = 0; i < 30; i++) particles.push(new Particle(true));
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => {
-            p.update();
-            p.draw();
+            p.update(); p.draw();
+            if (p.interactive) {
+                let dx = mouse.x - p.x; let dy = mouse.y - p.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 120) {
+                    ctx.strokeStyle = `rgba(0, 163, 255, ${0.1 * (1 - dist/120)})`;
+                    ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+                }
+            }
         });
         requestAnimationFrame(animate);
     }
-
-    init();
     animate();
 
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
-        const activeNav = Array.from(document.querySelectorAll('.nav-link')).find(link => link.innerText.toLowerCase().includes(pageId === 'main' ? 'главная' : pageId === 'order' ? 'настройка' : 'результаты'));
-        if(activeNav) activeNav.classList.add('active');
+        document.getElementById('nav-' + pageId).classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
