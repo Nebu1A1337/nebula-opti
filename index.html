@@ -111,7 +111,7 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 12px 25px; /* Чуть увеличили общие отступы меню */
+    padding: 12px 25px;
     border-radius: 24px;
     position: sticky;
     top: 20px;
@@ -122,7 +122,7 @@
             color: #94a3b8;
             font-size: 13px;
             font-weight: 600;
-            padding: 6px 18px; /* Уменьшили высоту кнопки (было 8px) */
+            padding: 6px 18px;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -141,47 +141,29 @@
         }
     </style>
 
-    <!-- Логотип -->
-    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+    <!-- Левая часть: Логотип -->
+    <div style="display: flex; align-items: center; gap: 12px;">
         <div style="background: var(--primary); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--primary-glow); font-weight: 900;">
             <span style="color: white; font-size: 16px;">N</span>
         </div>
         <span style="font-weight: 800; text-transform: uppercase; font-size: 15px; color: white;">Nebula <span class="glow-text">Opti</span></span>
     </div>
 
-    <!-- Центральное меню (Исправленные отступы) -->
+    <!-- Правая часть: Центральное меню (теперь прижато вправо, так как кнопки "Войти" больше нет) -->
     <div style="
         display: flex;
-        gap: 4px;
+        gap: 6px;
         background: rgba(0, 0, 0, 0.4);
-        padding: 6px; /* Добавили больше места внутри черной рамки */
+        padding: 6px;
         border-radius: 18px;
         border: 1px solid rgba(255, 255, 255, 0.05);
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
     ">
         <div id="nav-main" class="nav-item active" onclick="showPage('main')">Главная</div>
         <div id="nav-order" class="nav-item" onclick="showPage('order')">Услуги</div>
         <div id="nav-results" class="nav-item" onclick="showPage('results')">Кейсы</div>
     </div>
-
-    <!-- Правая часть -->
-    <div style="display: flex; justify-content: flex-end; flex: 1;">
-        <a href="https://discord.gg" target="_blank" style="
-            background: #5865F2;
-            color: white;
-            text-decoration: none;
-            padding: 9px 22px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 13px;
-            transition: 0.3s;
-        " onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='#4752c4'" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='#5865F2'">
-            Войти
-        </a>
-    </div>
 </nav>
+
 
 
 
@@ -194,31 +176,54 @@
     </div>
 
     <!-- УСЛУГИ -->
+    <!-- СТРАНИЦА УСЛУГ С ПЛАШКОЙ TOP SELLER -->
     <div id="order" class="page">
-        <h1>Выберите <span class="glow-text">Тариф</span></h1>
+        <h1 style="margin-bottom: 40px; text-transform: uppercase;">Выберите <span class="glow-text">Тариф</span></h1>
         <div class="grid">
+            <!-- Тариф BASIC -->
             <div class="card">
-                <h3 style="font-size: 24px; letter-spacing: 2px;">BASIC</h3>
-                <div style="font-size: 44px; font-weight: 900; margin: 25px 0;" class="glow-text">200 ₽</div>
-                <ul style="list-style: none; color: #94a3b8; line-height: 2.8; font-size: 16px;">
+                <h3 style="font-size: 22px; letter-spacing: 1px;">BASIC</h3>
+                <div style="font-size: 38px; font-weight: 900; margin: 20px 0;" class="glow-text">200 ₽</div>
+                <ul style="list-style: none; color: #94a3b8; line-height: 2.5;">
                     <li>● Оптимизация Windows 10/11</li>
-                    <li>● Тюнинг параметров Rust</li>
+                    <li>● Настройка параметров Rust</li>
                     <li>● Глубокая очистка системы</li>
+                    <li>● Настройка видеокарты</li>
                 </ul>
-                <a href="https://discord.gg" target="_blank" class="btn-main" style="width: 100%; text-align: center; margin-top: 40px;">Купить</a>
+                <a href="https://discord.gg" target="_blank" class="btn-main" style="width: 100%; text-align: center; margin-top: 30px;">Купить</a>
             </div>
-            <div class="card" style="border-color: var(--primary);">
-                <h3 style="font-size: 24px; letter-spacing: 2px;">ADVANCED</h3>
-                <div style="font-size: 44px; font-weight: 900; margin: 25px 0;" class="glow-text">350 ₽</div>
-                <ul style="list-style: none; color: #94a3b8; line-height: 2.8; font-size: 16px;">
+
+            <!-- Тариф ADVANCED (С плашкой) -->
+            <div class="card" style="border-color: var(--primary); position: relative;">
+                <!-- ПЛАШКА TOP SELLER -->
+                <div style="
+                position: absolute;
+                top: 18px;
+                right: 25px;
+                color: var(--primary);
+                font-size: 10px;
+                font-weight: 900;
+                letter-spacing: 2px;
+                text-shadow: 0 0 10px var(--primary-glow);
+                background: rgba(0, 163, 255, 0.1);
+                padding: 4px 10px;
+                border-radius: 8px;
+                border: 1px solid var(--border);
+            ">TOP SELLER</div>
+
+                <h3 style="font-size: 22px; letter-spacing: 1px;">ADVANCED</h3>
+                <div style="font-size: 38px; font-weight: 900; margin: 20px 0;" class="glow-text">350 ₽</div>
+                <ul style="list-style: none; color: #94a3b8; line-height: 2.5;">
                     <li>● Все из пакета BASIC</li>
                     <li>● Максимальный приоритет</li>
-                    <li>● Оптимизация задержки</li>
+                    <li>● Оптимизация задержки (Input Lag)</li>
+                    <li>● Настройка RAM (Latency)</li>
                 </ul>
-                <a href="https://discord.gg" target="_blank" class="btn-main" style="width: 100%; text-align: center; margin-top: 40px;">Купить</a>
+                <a href="https://discord.gg" target="_blank" class="btn-main" style="width: 100%; text-align: center; margin-top: 30px;">Купить</a>
             </div>
         </div>
     </div>
+
 
     <!-- КЕЙСЫ -->
     <div id="results" class="page">
@@ -232,7 +237,7 @@
 </div>
 
 <footer style="width: 100%; max-width: 1000px; padding: 150px 20px 80px; margin: 0 auto; display: flex; justify-content: center;">
-    <a href="https://discord.gg" target="_blank" class="discord-card" style="
+    <a href="https://discord.gg/2F4gjM4UcT" target="_blank" class="discord-card" style="
         background: rgba(255, 255, 255, 0.015);
         backdrop-filter: blur(30px);
         -webkit-backdrop-filter: blur(30px);
